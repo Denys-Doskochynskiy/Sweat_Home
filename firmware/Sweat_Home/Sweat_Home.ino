@@ -2,12 +2,12 @@
 #include <ESP8266WebServer.h>       
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
-  
+
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>  
 #include <EEPROM.h>
-//#define FIREBASE_HOST "ionkid-abd2f.firebaseio.com"
-//#define FIREBASE_AUTH "12Bs4sG60U96pN0VqAYxIRzKmo55omcTIUPejNZF"
+#define FIREBASE_HOST "sweat-home.firebaseio.com"
+#define FIREBASE_AUTH "F35m5RRUMpodQbnWZc4mX396id1LtHenPxlXnQ3d"
 // set the LCD number of columns and rows
   
 
@@ -18,8 +18,8 @@
  
 //Establishing Local server at port 80 whenever required
  ESP8266WebServer server(80);
- 
-
+ String deviceId;
+String stringTwo;
 String st;
 String content;
 bool testWifi(void);
@@ -66,14 +66,19 @@ Serial.println("Reading EEPROM userID");
     eUserID += char(EEPROM.read(i));
   }
   Serial.print("USER_ID: ");
-  Serial.println(eUserID);
-
+ String testString =eUserID.c_str();
+  stringTwo = testString;
+  // then perform the replacements:
+  stringTwo.replace(".", ",");
+  Serial.println(stringTwo);
 Serial.println("Reading EEPROM deviceID");
   String eDeviceID = "";
   for (int i = 96; i <128; ++i)
   {
     eDeviceID += char(EEPROM.read(i));
   }
+   String device=eDeviceID.c_str();
+   deviceId=device;
   Serial.print("DEVICE_ID: ");
   Serial.println(eDeviceID);
  
@@ -90,6 +95,7 @@ Serial.println("Reading EEPROM deviceID");
   if(WiFi.isConnected()){
      
    Serial.println("STATUS:200");
+   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
     }else{
     Serial.print("STATUS:404");
     }
@@ -116,14 +122,22 @@ Serial.println("Reading EEPROM deviceID");
   
 }
   
-  
+  int increment=0;
+  int isChecked =0;
 /*
-int increment=0;
+
 int n = 0;
 int isChecked;
 String isActivated;
 String user;*/
 void loop() {
+ 
+  if(isChecked==0){
+    
+     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/type","self-watering");
+     isChecked=1;
+    }
+   Firebase.setInt("users/"+stringTwo+"/device/"+deviceId+"/Log",increment);
   /*
   if( isChecked==0){
    user= Firebase.getString("Arduino/ActivateCode/User");
@@ -139,8 +153,10 @@ isActivated= Firebase.getString("Arduino/ActivateCode/Activate");
      lcd.clear();
      lcd.setCursor(0,0);
      lcd.print("STATUS:404");
- }
-increment++;*/
+ }*/
+ Serial.print(increment);
+ delay(1000);
+increment++;
 }
 
 
