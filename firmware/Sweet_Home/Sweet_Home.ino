@@ -6,7 +6,7 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>  
 #include <EEPROM.h>
-#define PIN_RELAY 5
+#define PIN_RELAY 13 
 int resval = 0;  // holds the value
 int respin = A0; // sensor pin used
    int hour =3600000;
@@ -90,6 +90,7 @@ Serial.println("Reading EEPROM deviceID");
   WiFi.begin(esid.c_str(), epass.c_str());
   if (testWifi())
   {
+  
     Serial.println("Succesfully Connected!!!");
      Serial.println(WiFi.localIP());
     
@@ -102,6 +103,9 @@ Serial.println("Reading EEPROM deviceID");
    Serial.println("STATUS:200");
    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
     configTime(timezone, dst, "pool.ntp.org","time.nist.gov");
+    digitalWrite(PIN_RELAY, HIGH);
+    digitalWrite(PIN_RELAY, LOW);
+   
     }else{
     Serial.print("STATUS:404");
     }
@@ -138,16 +142,25 @@ String isActivated;
 String user;*/
 void loop() {
  
-  
+  time_t now = time(nullptr);
+  struct tm* p_tm = localtime(&now);
  
-
+  
+    int testHourTEST=p_tm->tm_hour;
+ 
+ int startTime= Firebase.getInt("users/"+stringTwo+"/device/"+deviceId+"/startTime");
+  int endTime= Firebase.getInt("users/"+stringTwo+"/device/"+deviceId+"/endTime");
 
   if(isChecked==0){
     
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/type","self-watering");
      isChecked=1;
     }
-    avto_watering();
+    Serial.println(startTime);
+    Serial.println(endTime);
+    if(testHourTEST>=startTime&&testHourTEST<=endTime){
+    avto_watering();}
+     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastTimeWatering",(String)testHourTEST);
    Firebase.setInt("users/"+stringTwo+"/device/"+deviceId+"/Log",increment);
   /*
   if( isChecked==0){

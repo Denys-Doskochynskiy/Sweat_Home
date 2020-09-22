@@ -26,11 +26,12 @@ void avto_watering(){
         Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
         delay(hour/12);
         if( Firebase.getString("ref")=="1"){
-           digitalWrite(PIN_RELAY, LOW); // Включаем реле - посылаем низкий уровень сигнала
+            digitalWrite(PIN_RELAY, HIGH);  // Включаем реле - посылаем низкий уровень сигнала
              Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is started");
              
     delay(5000);
-     digitalWrite(PIN_RELAY, HIGH);
+  
+      digitalWrite(PIN_RELAY, LOW);
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is stop");
       Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
           Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastDateWatering",(String)testDay+"/"+testMon+"/"+testYear+"____"+testHour+":"+testMin+":"+testSec);
@@ -47,9 +48,9 @@ void avto_watering(){
        Serial.println("Water Level: Low");
        Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/soilMoisture","low");
        Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is started");
-     digitalWrite(PIN_RELAY, LOW); // Включаем реле - посылаем низкий уровень сигнала
+      digitalWrite(PIN_RELAY, HIGH); // Включаем реле - посылаем низкий уровень сигнала
     delay(5000);
-     digitalWrite(PIN_RELAY, HIGH);
+    digitalWrite(PIN_RELAY, LOW);
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is stop");
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
   //    Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastDateWatering",(String)testDay+"/"+testMon+"/"+testYear+"____"+testHour+":"+testMin+":"+testSec);
