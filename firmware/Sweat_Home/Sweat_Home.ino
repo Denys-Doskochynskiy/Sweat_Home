@@ -2,17 +2,20 @@
 #include <ESP8266WebServer.h>       
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
-
+#include <time.h>
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>  
 #include <EEPROM.h>
+#define PIN_RELAY 5
+int resval = 0;  // holds the value
+int respin = A0; // sensor pin used
+   int hour =3600000;
 #define FIREBASE_HOST "sweat-home.firebaseio.com"
 #define FIREBASE_AUTH "F35m5RRUMpodQbnWZc4mX396id1LtHenPxlXnQ3d"
 // set the LCD number of columns and rows
-  
+  int timezone = 3 * 3600;
+int dst = 0;
 
-
- 
 //Function Decalration
 
  
@@ -26,6 +29,8 @@ bool testWifi(void);
 void launchWeb(void);
 void setupAP(void);
 void setup() { 
+  pinMode(PIN_RELAY, OUTPUT); 
+  digitalWrite(PIN_RELAY, HIGH);
   Serial.begin(9600);
    Serial.println();
   Serial.println("Disconnecting previously connected WiFi");
@@ -96,6 +101,7 @@ Serial.println("Reading EEPROM deviceID");
      
    Serial.println("STATUS:200");
    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+    configTime(timezone, dst, "pool.ntp.org","time.nist.gov");
     }else{
     Serial.print("STATUS:404");
     }
@@ -132,11 +138,16 @@ String isActivated;
 String user;*/
 void loop() {
  
+  
+ 
+
+
   if(isChecked==0){
     
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/type","self-watering");
      isChecked=1;
     }
+    avto_watering();
    Firebase.setInt("users/"+stringTwo+"/device/"+deviceId+"/Log",increment);
   /*
   if( isChecked==0){
