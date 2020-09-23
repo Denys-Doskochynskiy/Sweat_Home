@@ -102,6 +102,7 @@ Serial.println("Reading EEPROM deviceID");
      
    Serial.println("STATUS:200");
    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+    Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/status","self-watering");
     configTime(timezone, dst, "pool.ntp.org","time.nist.gov");
     digitalWrite(PIN_RELAY, HIGH);
     digitalWrite(PIN_RELAY, LOW);
@@ -162,22 +163,7 @@ void loop() {
     avto_watering();}
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastTimeWatering",(String)testHourTEST);
    Firebase.setInt("users/"+stringTwo+"/device/"+deviceId+"/Log",increment);
-  /*
-  if( isChecked==0){
-   user= Firebase.getString("Arduino/ActivateCode/User");
-isActivated= Firebase.getString("Arduino/ActivateCode/Activate");
- isChecked=1;
-    }
-    noise_sensor();
-  irValue = particleSensor.getIR();
- if( isActivated=="1"){
- heart_rate();
- } else{
-   
-     lcd.clear();
-     lcd.setCursor(0,0);
-     lcd.print("STATUS:404");
- }*/
+
  Serial.print(increment);
  delay(1000);
 increment++;

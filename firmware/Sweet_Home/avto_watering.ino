@@ -25,35 +25,38 @@ void avto_watering(){
         Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/soilMoisture","medium");
         Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
         delay(hour/12);
-        if( Firebase.getString("ref")=="1"){
+       
             digitalWrite(PIN_RELAY, HIGH);  // Включаем реле - посылаем низкий уровень сигнала
-             Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is started");
+            Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Yes");
+             Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/status","Watering is started");
              
     delay(5000);
   
       digitalWrite(PIN_RELAY, LOW);
-     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is stop");
+     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/status","Watering is stop");
       Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
           Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastDateWatering",(String)testDay+"/"+testMon+"/"+testYear+"____"+testHour+":"+testMin+":"+testSec);
-          }
+          
       delay(hour/4);
         }
         else if (resval<=100){ 
     Serial.println("Water Level: Empty");
-     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Sensor didn't work corect");
+     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/ststus","Sensor didn't work corect");
+     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/soilMoisture","ERROR");
     
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastDateWatering",(String)testDay+"/"+testMon+"/"+testYear+"____"+testHour+":"+testMin+":"+testSec);
     }else{
        Serial.println("Water Level: Low");
        Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/soilMoisture","low");
-       Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is started");
+       Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Yes");
+       Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/status","Watering is started");
       digitalWrite(PIN_RELAY, HIGH); // Включаем реле - посылаем низкий уровень сигнала
     delay(5000);
     digitalWrite(PIN_RELAY, LOW);
-     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","Watering is stop");
+     Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/status","Watering is stop");
      Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/isActivated","No");
-  //    Firebase.setString("users/"+stringTwo+"/device/"+deviceId+"/lastDateWatering",(String)testDay+"/"+testMon+"/"+testYear+"____"+testHour+":"+testMin+":"+testSec);
+  
   }
   delay(1000); 
 }
